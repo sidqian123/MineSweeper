@@ -1,9 +1,5 @@
 package com.example.minesweeper;
 import android.graphics.Color;
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.TextView;
 
 import java.util.Set;
@@ -17,8 +13,8 @@ public class logic {
         while (count < MINE_COUNT) {
             int x = (int) (Math.random() * 11);
             int y = (int) (Math.random() * 9);
-            if (!grid[x][y].getText().toString().equals("\uD83D\uDCA3") && x != i && y != j) {
-                grid[x][y].setText("\uD83D\uDCA3");
+            if (!isMine(x, y) && x != i && y != j) {
+                //grid[x][y].setText("\uD83D\uDCA3");
                 mines[count] = new int[]{x, y};
                 count++;
             }
@@ -31,30 +27,30 @@ public class logic {
 public static void calculateNumbers(TextView[][] grid) {
         for (int i = 0; i <= 11; i++) {
             for (int j = 0; j <= 9; j++) {
-                if (!grid[i][j].getText().toString().equals("\uD83D\uDCA3")) {
+                if (!isMine(i, j)) {
                     int count = 0;
-                    if (i > 0 && j > 0 && grid[i - 1][j - 1].getText().toString().equals("\uD83D\uDCA3")) {
+                    if (i > 0 && j > 0 && isMine(i-1, j-1)) {
                         count++;
                     }
-                    if (i > 0 && grid[i - 1][j].getText().toString().equals("\uD83D\uDCA3")) {
+                    if (i > 0 && isMine(i-1, j)) {
                         count++;
                     }
-                    if (i > 0 && j < 9 && grid[i - 1][j + 1].getText().toString().equals("\uD83D\uDCA3")) {
+                    if (i > 0 && j < 9 && isMine(i-1, j+1)) {
                         count++;
                     }
-                    if (j > 0 && grid[i][j - 1].getText().toString().equals("\uD83D\uDCA3")) {
+                    if (j > 0 && isMine(i, j-1)) {
                         count++;
                     }
-                    if (j < 9 && grid[i][j + 1].getText().toString().equals("\uD83D\uDCA3")) {
+                    if (j < 9 && isMine(i, j+1)) {
                         count++;
                     }
-                    if (i < 11 && j > 0 && grid[i + 1][j - 1].getText().toString().equals("\uD83D\uDCA3")) {
+                    if (i < 11 && j > 0 && isMine(i+1, j-1)) {
                         count++;
                     }
-                    if (i < 11 && grid[i + 1][j].getText().toString().equals("\uD83D\uDCA3")) {
+                    if (i < 11 && isMine(i+1, j)) {
                         count++;
                     }
-                    if (i < 11 && j < 9 && grid[i + 1][j + 1].getText().toString().equals("\uD83D\uDCA3")) {
+                    if (i < 11 && j < 9 && isMine(i+1, j+1)) {
                         count++;
                     }
                     if (count > 0) {
@@ -78,11 +74,11 @@ public static void calculateNumbers(TextView[][] grid) {
     //a function that check if the cell is a mine use i j
     public static boolean isMine(int i, int j) {
         for(int k = 0; k < MINE_COUNT; k++){
-            if(mines[k][0] != i && mines[k][1] != j){
-                return false;
+            if(mines[k][0] == i && mines[k][1] == j){
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     //a function that check if the cell is a number use i j
@@ -136,11 +132,10 @@ public static void calculateNumbers(TextView[][] grid) {
     }
 
     //check if lose by checking if the cell is a mine
-    public static boolean checkLose( int i, int j) {
-        for(int k = 0; k < MINE_COUNT; k++){
-            if(mines[k][0] == i && mines[k][1] == j){
-                return true;
-            }
+    public static boolean checkLose( int i, int j, TextView[][] grid) {
+        if(isMine(i,j)){
+            revealMines(grid);
+            return true;
         }
         return false;
     }

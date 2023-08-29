@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
                 init = true;
             }
             else{
+                logic.checkLose(i, j, cell_tvs);
                 logic.calculateNumbers(cell_tvs);
                 logic.revealCell(cell_tvs, i, j, visited);
             }
