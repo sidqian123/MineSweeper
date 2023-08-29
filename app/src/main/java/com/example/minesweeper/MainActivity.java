@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private int numFlag = 4;
     private boolean running = false;
     private boolean init = false;
+    private boolean over = false;
     private Set<String> visited = new HashSet<>();
     public static TextView[][] cell_tvs = new TextView[12][10];
 
@@ -102,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
                 tv.setText("🚩");
                 numFlag--;
                 updateFlag();
-                if(numFlag == 0){
-                    System.out.println(logic.checkWin(cell_tvs));
+                if(numFlag == 0 && logic.checkWin(cell_tvs)){
+                    sendMessage(view, true);
                 }
             }
             else if(tv.getText().toString().equals("🚩")){
@@ -118,9 +119,13 @@ public class MainActivity extends AppCompatActivity {
                 init = true;
             }
             else{
-                logic.checkLose(i, j, cell_tvs);
-                logic.calculateNumbers(cell_tvs);
-                logic.revealCell(cell_tvs, i, j, visited);
+                if(logic.checkLose(i, j, cell_tvs)){
+                    sendMessage(view, false);
+                }
+                else{
+                    logic.calculateNumbers(cell_tvs);
+                    logic.revealCell(cell_tvs, i, j, visited);
+                }
             }
         }
     }
@@ -174,8 +179,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendMessage(View view, boolean win){
-        Intent intent = new Intent(this, FinalActivity.class);
-        intent.putExtra("com.example.sendmessage.MESSAGE", "Lose");
-        startActivity(intent);
+        if(win){
+            Intent intent = new Intent(this, FinalActivity.class);
+            intent.putExtra("com.example.sendmessage.MESSAGE", "Used " + clock + " seconds.\nYou Win!\nGood Job!");
+            startActivity(intent);
+        }
+        else{
+            Intent intent = new Intent(this, FinalActivity.class);
+            intent.putExtra("com.example.sendmessage.MESSAGE", "Bummer! You Lose!");
+            startActivity(intent);
+        }
+
     }
 }

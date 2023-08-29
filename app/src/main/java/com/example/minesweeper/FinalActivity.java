@@ -16,13 +16,12 @@ public class FinalActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String message = intent.getStringExtra("com.example.sendmessage.MESSAGE");
-        message = message + " : Fight On!";
 
         TextView textView = (TextView) findViewById(R.id.textView);
         textView.setText(message);
     }
 
-    public void backToMain(View view) {
+    public void playAgain(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
