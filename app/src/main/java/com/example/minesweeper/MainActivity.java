@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     private static final int COLUMN_COUNT = 10;
@@ -20,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private int numFlag = 4;
     private boolean running = false;
     private boolean init = false;
+    private Set<String> visited = new HashSet<>();
     public static TextView[][] cell_tvs = new TextView[12][10];
 
     // save the TextViews of all cells in an array, so later on,
@@ -106,11 +109,11 @@ public class MainActivity extends AppCompatActivity {
         }
         else{
             if (!init) {
-                logic.initializeGrid(cell_tvs, i, j);
+                logic.initializeGrid(cell_tvs, i, j, visited);
                 init = true;
             }
             else{
-                logic.revealCell(cell_tvs, i, j);
+                logic.revealCell(cell_tvs, i, j, visited);
             }
         }
     }
