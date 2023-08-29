@@ -96,23 +96,27 @@ public class MainActivity extends AppCompatActivity {
         int i = n/COLUMN_COUNT;
         int j = n%COLUMN_COUNT;
         if(checkAction()){
-            if(!tv.getText().toString().equals("🚩")){
+            if(!tv.getText().toString().equals("🚩") && !visited.contains(i + "," + j)){
                 tv.setText("🚩");
                 numFlag--;
                 updateFlag();
+                if(numFlag == 0){
+                    System.out.println(logic.checkWin(cell_tvs));
+                }
             }
-            else{
+            else if(tv.getText().toString().equals("🚩")){
                 tv.setText("");
                 numFlag++;
                 updateFlag();
             }
         }
-        else{
+        else if(!tv.getText().toString().equals("🚩")){
             if (!init) {
                 logic.initializeGrid(cell_tvs, i, j, visited);
                 init = true;
             }
             else{
+                logic.calculateNumbers(cell_tvs);
                 logic.revealCell(cell_tvs, i, j, visited);
             }
         }
