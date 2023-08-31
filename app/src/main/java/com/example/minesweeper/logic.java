@@ -89,7 +89,7 @@ public static void calculateNumbers(TextView[][] grid) {
     //reveal the cells around the cell that has no mines around it
     //check 8 cells around it and if the cell is already grey or has a number then stop
     public static void revealCell(TextView[][] grid, int i, int j, Set<String> visited) {
-        if (i < 0 || i >= grid.length || j < 0 || j >= grid[0].length || grid[i][j].getText().toString().equals("🚩")) return;
+        if (i < 0 || i >= grid.length || j < 0 || j >= grid[0].length) return;
 
         String cellKey = i + "," + j;
 
@@ -115,6 +115,19 @@ public static void calculateNumbers(TextView[][] grid) {
         revealCell(grid, i - 1, j + 1, visited);
         revealCell(grid, i + 1, j - 1, visited);
         revealCell(grid, i + 1, j + 1, visited);
+    }
+
+    //a function that count the total number of flags
+    public static int countFlags(TextView[][] grid, int total) {
+        int count = 0;
+        for(int i = 0; i < 12; i++){
+            for(int j = 0; j < 10; j++){
+                if(grid[i][j].getText().toString().equals("🚩")){
+                    count++;
+                }
+            }
+        }
+        return total - count;
     }
 
     //a function that check if the player win by checking if flag 2d array of mines

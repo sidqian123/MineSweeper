@@ -1,30 +1,26 @@
 package com.example.minesweeper;
-import com.example.minesweeper.logic;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.gridlayout.widget.GridLayout;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.gridlayout.widget.GridLayout;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     private static final int COLUMN_COUNT = 10;
     private int clock = 0;
-    private int numFlag = 4;
+    private final int numFlag = 4;
     private boolean running = false;
     private boolean init = false;
-    private boolean over = false;
     private Set<String> visited = new HashSet<>();
     public static TextView[][] cell_tvs = new TextView[12][10];
 
@@ -37,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         //fill the grid
         setContentView(R.layout.activity_main);
         LayoutInflater li = LayoutInflater.from(this);
-        GridLayout grid = (GridLayout) findViewById(R.id.gridLayout01);
+        GridLayout grid = findViewById(R.id.gridLayout01);
         for (int i = 0; i <= 11; i++) {
             for (int j = 0; j <= 9; j++) {
                 TextView tv = (TextView) li.inflate(R.layout.custom_cell_layout, grid, false);
@@ -56,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         //set change flag to pickaxe function
-        TextView action = (TextView) findViewById(R.id.textView6);
+        TextView action = findViewById(R.id.textView6);
         action.setOnClickListener(this::onClickAction);
         //retrieve old timer if there is one
         if (savedInstanceState != null) {
@@ -70,12 +66,8 @@ public class MainActivity extends AppCompatActivity {
 
     //return true for flag false for pickaxe
     public boolean checkAction(){
-        TextView tv = (TextView) findViewById(R.id.textView6);
-        if (tv.getText().toString().equals("🚩")){
-            return true;
-        }else {
-            return false;
-        }
+        TextView tv = findViewById(R.id.textView6);
+        return tv.getText().toString().equals("🚩");
     }
 
 //find the index of the textview in the 2d array
@@ -101,30 +93,30 @@ public class MainActivity extends AppCompatActivity {
         if(checkAction()){
             if(!tv.getText().toString().equals("🚩") && !visited.contains(i + "," + j)){
                 tv.setText("🚩");
-                numFlag--;
                 updateFlag();
-                if(numFlag == 0 && logic.checkWin(cell_tvs)){
-                    sendMessage(view, true);
+                if(logic.countFlags(cell_tvs, numFlag) == 0 && logic.checkWin(cell_tvs)){
+                    sendMessage(true);
                 }
             }
             else if(tv.getText().toString().equals("🚩")){
                 tv.setText("");
-                numFlag++;
                 updateFlag();
             }
         }
         else if(!tv.getText().toString().equals("🚩")){
             if (!init) {
                 logic.initializeGrid(cell_tvs, i, j, visited);
+                updateFlag();
                 init = true;
             }
             else{
                 if(logic.checkLose(i, j, cell_tvs)){
-                    sendMessage(view, false);
+                    sendMessage(false);
                 }
                 else{
                     logic.calculateNumbers(cell_tvs);
                     logic.revealCell(cell_tvs, i, j, visited);
+                    updateFlag();
                 }
             }
         }
@@ -141,20 +133,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void onSaveInstanceState(Bundle savedInstanceState) {
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putInt("clock", clock);
         savedInstanceState.putBoolean("running", running);
     }
     //keep the number of flags updated
     private void updateFlag(){
-        TextView timeView = (TextView) findViewById(R.id.textView3);
-        timeView.setText(String.valueOf(numFlag));
+        TextView timeView = findViewById(R.id.textView3);
+        timeView.setText(String.valueOf(logic.countFlags(cell_tvs, numFlag)));
 
     }
 
     private void runTimer() {
-        final TextView timeView = (TextView) findViewById(R.id.textView5);
+        final TextView timeView = findViewById(R.id.textView5);
         final Handler handler = new Handler();
 
         handler.post(new Runnable() {
@@ -162,14 +154,14 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 int seconds = clock;
                 //convert seconds to string
+                String time;
                 if(seconds <= 999){
-                    String time = Integer.toString(seconds);
-                    timeView.setText(time);
+                    time = Integer.toString(seconds);
                 }
                 else{
-                    String time = "999";
-                    timeView.setText(time);
+                    time = "999";
                 }
+                timeView.setText(time);
                 if (running) {
                     clock++;
                 }
@@ -178,17 +170,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void sendMessage(View view, boolean win){
+    public void sendMessage(boolean win){
+        Intent intent = new Intent(this, FinalActivity.class);
         if(win){
-            Intent intent = new Intent(this, FinalActivity.class);
             intent.putExtra("com.example.sendmessage.MESSAGE", "Used " + clock + " seconds.\nYou Win!\nGood Job!");
-            startActivity(intent);
         }
         else{
-            Intent intent = new Intent(this, FinalActivity.class);
             intent.putExtra("com.example.sendmessage.MESSAGE", "Bummer! You Lose!");
-            startActivity(intent);
         }
+        startActivity(intent);
 
     }
 }
