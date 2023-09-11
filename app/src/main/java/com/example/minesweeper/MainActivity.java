@@ -100,11 +100,6 @@ public class MainActivity extends AppCompatActivity {
             if(!tv.getText().toString().equals("🚩") && !visited.contains(i + "," + j)){
                 tv.setText("🚩");
                 updateFlag();
-                if(logic.countFlags(cell_tvs, numFlag) == 0 && logic.checkAllRevealed(cell_tvs) && logic.checkWin(cell_tvs)){
-                    running = false;
-                    end = true;
-                    result = true;
-                }
             }
             else if(tv.getText().toString().equals("🚩")){
                 tv.setText("");
@@ -129,6 +124,12 @@ public class MainActivity extends AppCompatActivity {
                     updateFlag();
                 }
             }
+        }
+        if(logic.checkAllRevealed(cell_tvs)){
+            logic.revealWin(cell_tvs);
+            running = false;
+            end = true;
+            result = true;
         }
     }
 

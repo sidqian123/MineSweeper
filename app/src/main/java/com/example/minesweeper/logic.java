@@ -131,20 +131,6 @@ public static void calculateNumbers(TextView[][] grid) {
         return total - count;
     }
 
-    //a function that check if the player win by checking if flag 2d array of mines
-    //is the same as the mines 2d array
-    public static boolean checkWin(TextView[][] grid) {
-        for(int i = 0; i < MINE_COUNT; i++){
-            if(grid[mines[i][0]][mines[i][1]].getText().toString().equals("🚩")){
-                continue;
-            }
-            else{
-                return false;
-            }
-        }
-        revealWin(grid);
-        return true;
-    }
 
     //reveal if win and show flowers on the mines
     public static void revealWin(TextView[][] grid) {
@@ -177,16 +163,12 @@ public static void calculateNumbers(TextView[][] grid) {
                 ColorDrawable background = (ColorDrawable) grid[i][j].getBackground();
                 int colorCode = background.getColor();
                 if (colorCode == Color.parseColor("lightgray")) {
-                    if (!isMine(i, j)) {
-                        count++;
-                    }
+                    count++;
                 }
             }
         }
-        if(count == MINE_COUNT){
-            return true;
-        }
-        return false;
+        System.out.println(count == 120 - MINE_COUNT);
+        return (count == 120 - MINE_COUNT);
     }
 
 }
