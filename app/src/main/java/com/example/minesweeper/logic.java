@@ -1,5 +1,6 @@
 package com.example.minesweeper;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.widget.TextView;
 
 import java.util.Set;
@@ -141,7 +142,15 @@ public static void calculateNumbers(TextView[][] grid) {
                 return false;
             }
         }
+        revealWin(grid);
         return true;
+    }
+
+    //reveal if win and show flowers on the mines
+    public static void revealWin(TextView[][] grid) {
+        for(int i = 0; i < MINE_COUNT; i++){
+            grid[mines[i][0]][mines[i][1]].setText("\uD83C\uDF38");
+        }
     }
 
     //check if lose by checking if the cell is a mine
@@ -158,6 +167,26 @@ public static void calculateNumbers(TextView[][] grid) {
         for(int i = 0; i < MINE_COUNT; i++){
             grid[mines[i][0]][mines[i][1]].setText("\uD83D\uDCA3");
         }
+    }
+
+    //check if all cells are revealed by checking if the cell is grey beside the mine
+    public static boolean checkAllRevealed(TextView[][] grid) {
+        int count = 0;
+        for (int i = 0; i < 12; i++) {
+            for (int j = 0; j < 10; j++) {
+                ColorDrawable background = (ColorDrawable) grid[i][j].getBackground();
+                int colorCode = background.getColor();
+                if (colorCode == Color.parseColor("lightgray")) {
+                    if (!isMine(i, j)) {
+                        count++;
+                    }
+                }
+            }
+        }
+        if(count == MINE_COUNT){
+            return true;
+        }
+        return false;
     }
 
 }

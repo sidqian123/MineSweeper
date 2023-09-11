@@ -21,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
     private final int numFlag = 4;
     private boolean running = false;
     private boolean init = false;
+    private boolean result;
+    private boolean end = false;
+    public static int revealed = 120;
     private Set<String> visited = new HashSet<>();
     public static TextView[][] cell_tvs = new TextView[12][10];
 
@@ -83,6 +86,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickTV(View view){
+        if(!running && end){
+            sendMessage(result);
+        }
         if(!running){
             running = true;
         }
@@ -94,8 +100,10 @@ public class MainActivity extends AppCompatActivity {
             if(!tv.getText().toString().equals("🚩") && !visited.contains(i + "," + j)){
                 tv.setText("🚩");
                 updateFlag();
-                if(logic.countFlags(cell_tvs, numFlag) == 0 && logic.checkWin(cell_tvs)){
-                    sendMessage(true);
+                if(logic.countFlags(cell_tvs, numFlag) == 0 && logic.checkAllRevealed(cell_tvs) && logic.checkWin(cell_tvs)){
+                    running = false;
+                    end = true;
+                    result = true;
                 }
             }
             else if(tv.getText().toString().equals("🚩")){
@@ -111,7 +119,9 @@ public class MainActivity extends AppCompatActivity {
             }
             else{
                 if(logic.checkLose(i, j, cell_tvs)){
-                    sendMessage(false);
+                    running = false;
+                    end = true;
+                    result = false;
                 }
                 else{
                     logic.calculateNumbers(cell_tvs);
