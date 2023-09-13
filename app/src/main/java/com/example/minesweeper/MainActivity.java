@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         int n = findIndexOfCellTextView(tv);
         int i = n/COLUMN_COUNT;
         int j = n%COLUMN_COUNT;
-        if(checkAction()){
+        if(checkAction() && !end && running){
             if(!tv.getText().toString().equals("🚩") && !visited.contains(i + "," + j)){
                 tv.setText("🚩");
                 updateFlag();
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 updateFlag();
             }
         }
-        else if(!tv.getText().toString().equals("🚩")){
+        else if(!tv.getText().toString().equals("🚩") && !end && running){
             if (!init) {
                 logic.initializeGrid(cell_tvs, i, j, visited);
                 updateFlag();
